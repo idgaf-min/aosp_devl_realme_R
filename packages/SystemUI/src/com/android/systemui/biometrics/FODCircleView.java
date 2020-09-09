@@ -129,14 +129,7 @@ public class FODCircleView extends ImageView {
 
         @Override
         public void onScreenTurnedOff() {
-            hide();
-        }
-
-        @Override
-        public void onScreenTurnedOn() {
-            if (mUpdateMonitor.isFingerprintDetectionRunning()) {
-                show();
-            }
+            hideCircle();
         }
     };
 
@@ -188,7 +181,7 @@ public class FODCircleView extends ImageView {
         mParams.gravity = Gravity.TOP | Gravity.LEFT;
 
         mPressedParams.copyFrom(mParams);
-        mPressedParams.flags |= WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+//        mPressedParams.flags |= WindowManager.LayoutParams.FLAG_DIM_BEHIND;
 
         mParams.setTitle("Fingerprint on display");
         mPressedParams.setTitle("Fingerprint on display.touched");
@@ -202,9 +195,9 @@ public class FODCircleView extends ImageView {
                 super.onDraw(canvas);
             }
         };
-        mPressedView.setImageResource(R.drawable.fod_icon_pressed);
 
         mWindowManager.addView(this, mParams);
+        mWindowManager.addView(mPressedView, mPressedParams);
 
         updatePosition();
         hide();
@@ -310,6 +303,7 @@ public class FODCircleView extends ImageView {
         dispatchPress();
 
         setImageDrawable(null);
+        mPressedView.setImageResource(R.drawable.fod_icon_pressed);
         invalidate();
     }
 
@@ -326,11 +320,6 @@ public class FODCircleView extends ImageView {
     }
 
     public void show() {
-        if (!mUpdateMonitor.isScreenOn()) {
-            // Keyguard is shown just after screen turning off
-            return;
-        }
-
         if (mIsBouncer && !isPinOrPattern(mUpdateMonitor.getCurrentUser())) {
             // Ignore show calls when Keyguard password screen is being shown
             return;
@@ -390,10 +379,7 @@ public class FODCircleView extends ImageView {
         }
 
         mWindowManager.updateViewLayout(this, mParams);
-
-        if (mPressedView.getParent() != null) {
-            mWindowManager.updateViewLayout(mPressedView, mPressedParams);
-        }
+        mWindowManager.updateViewLayout(mPressedView, mPressedParams);
     }
 
     private void setDim(boolean dim) {
@@ -410,21 +396,17 @@ public class FODCircleView extends ImageView {
             }
 
             if (mShouldBoostBrightness) {
-                mPressedParams.screenBrightness = 1.0f;
+                //mPressedParams.screenBrightness = 1.0f;
             }
 
-            mPressedParams.dimAmount = dimAmount / 255.0f;
-            if (mPressedView.getParent() == null) {
-                mWindowManager.addView(mPressedView, mPressedParams);
-            } else {
-                mWindowManager.updateViewLayout(mPressedView, mPressedParams);
-            }
+            //mPressedParams.dimAmount = dimAmount / 255.0f;
+            mPressedView.setVisibility(View.VISIBLE);
+            mWindowManager.updateViewLayout(mPressedView, mPressedParams);
         } else {
-            mPressedParams.screenBrightness = 0.0f;
-            mPressedParams.dimAmount = 0.0f;
-            if (mPressedView.getParent() != null) {
-                mWindowManager.removeView(mPressedView);
-            }
+            //mPressedParams.screenBrightness = 0.0f;
+            //mPressedParams.dimAmount = 0.0f;
+            mPressedView.setVisibility(View.GONE);
+            mWindowManager.updateViewLayout(mPressedView, mPressedParams);
         }
     }
 

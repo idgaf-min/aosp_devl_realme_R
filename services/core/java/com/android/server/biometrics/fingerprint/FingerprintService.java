@@ -77,8 +77,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import lineageos.app.LineageContextConstants;
-
 import vendor.lineage.biometrics.fingerprint.inscreen.V1_0.IFingerprintInscreen;
 
 import java.io.File;
@@ -812,7 +810,7 @@ public class FingerprintService extends BiometricServiceBase {
                 getLockoutBroadcastPermission(), null /* handler */);
 
         PackageManager packageManager = context.getPackageManager();
-        mHasFod = packageManager.hasSystemFeature(LineageContextConstants.Features.FOD);
+        mHasFod = true;
     }
 
     @Override
