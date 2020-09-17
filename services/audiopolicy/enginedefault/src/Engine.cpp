@@ -160,12 +160,14 @@ DeviceVector Engine::getDevicesForStrategyInt(legacy_strategy strategy,
             devices = getDevicesForStrategyInt(
                     STRATEGY_SONIFICATION, availableOutputDevices, availableInputDevices, outputs);
         } else {
+#if 0
             bool media_active_locally =
                     outputs.isActiveLocally(toVolumeSource(AUDIO_STREAM_MUSIC),
                                             SONIFICATION_RESPECTFUL_AFTER_MUSIC_DELAY)
                     || outputs.isActiveLocally(
                         toVolumeSource(AUDIO_STREAM_ACCESSIBILITY),
                         SONIFICATION_RESPECTFUL_AFTER_MUSIC_DELAY);
+#endif
             // routing is same as media without the "remote" device
             availableOutputDevices.remove(availableOutputDevices.getDevicesFromType(
                     AUDIO_DEVICE_OUT_REMOTE_SUBMIX));
@@ -174,12 +176,14 @@ DeviceVector Engine::getDevicesForStrategyInt(legacy_strategy strategy,
                     availableInputDevices, outputs);
             // if no media is playing on the device, check for mandatory use of "safe" speaker
             // when media would have played on speaker, and the safe speaker path is available
+#if 0
             if (!media_active_locally) {
                 devices.replaceDevicesByType(
                         AUDIO_DEVICE_OUT_SPEAKER,
                         availableOutputDevices.getDevicesFromType(
                                 AUDIO_DEVICE_OUT_SPEAKER_SAFE));
             }
+#endif
         }
         break;
 
@@ -332,12 +336,14 @@ DeviceVector Engine::getDevicesForStrategyInt(legacy_strategy strategy,
             }
             // Use both Bluetooth SCO and phone default output when ringing in normal mode
             if (getForceUse(AUDIO_POLICY_FORCE_FOR_COMMUNICATION) == AUDIO_POLICY_FORCE_BT_SCO) {
+#if 0
                 if (strategy == STRATEGY_SONIFICATION) {
                     devices.replaceDevicesByType(
                             AUDIO_DEVICE_OUT_SPEAKER,
                             availableOutputDevices.getDevicesFromType(
                                     AUDIO_DEVICE_OUT_SPEAKER_SAFE));
                 }
+#endif
                 if (!devices2.isEmpty()) {
                     devices.add(devices2);
                     break;
@@ -462,12 +468,14 @@ DeviceVector Engine::getDevicesForStrategyInt(legacy_strategy strategy,
 
         // for STRATEGY_SONIFICATION:
         // if SPEAKER was selected, and SPEAKER_SAFE is available, use SPEAKER_SAFE instead
+#if 0
         if (strategy == STRATEGY_SONIFICATION) {
             devices.replaceDevicesByType(
                     AUDIO_DEVICE_OUT_SPEAKER,
                     availableOutputDevices.getDevicesFromType(
                             AUDIO_DEVICE_OUT_SPEAKER_SAFE));
         }
+#endif
         } break;
 
     case STRATEGY_CALL_ASSISTANT:
